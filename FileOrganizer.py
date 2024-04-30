@@ -1,11 +1,15 @@
 
-from VaultsManager import VaultsManager
+from CommandLineController import CommandLineController
 
-VAULT_MAIN_FILE = './vaults.json'
+
+
+class Global:
+    VAULT_MAIN_FILE = './vaults.json'
+    VAULT_DIRECTORY = './vaults'
 
 
 def main():
-    manager = VaultsManager(VAULT_MAIN_FILE)
+    CommandLineController()
 
 
 if __name__ == "__main__":

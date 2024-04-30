@@ -1,7 +1,9 @@
 import os, json
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 from Vault import Vault
+from FileOrganizer import Global
+import VaultSerialization
 
 class VaultsManager:
 
@@ -11,38 +13,35 @@ class VaultsManager:
         self.filepath = filepath
 
 
-    def get_all_vault_info(self) -> List[Dict]:
-        return list(self.vaults.values())
+    def get_all_vault_info(self) -> List[Tuple[int, Dict[str, str]]]:
+        return list(self.vaults.items())
 
 
     def load_vault(self, vaultId: int) -> Vault:
         if vaultId in self.vaults:
             vaultInfo = self.vaults[vaultId]
-
-            """
-            TODO: Load file and return as Vault object
-            """
-
+            vaultPath = vaultInfo['filepath']
+            return VaultSerialization.load_vault(vaultPath)
         raise Exception("Vault with id {} does not exist.".format(vaultId))
 
 
-    def add_vault(self, vault: Vault, autosave: bool=True):
+
+    def add_vault(self, vault: Vault, filepath: str|None, autosave: bool=True):
         id = vault.get_id()
         name = vault.get_name()
-        path = './vaults/{}.json'.format(name)
+        path = '{}/{}.json'.format(Global.VAULT_DIRECTORY, name) if not filepath else filepath
         self.vaults[id] = {
             'name': name,
             'filepath': path
         }
         if autosave:
+            VaultSerialization.save_vault(vault, path)
             self.save_vaults_file()
 
 
     def save_vaults_file(self):
         with open(self.filepath, 'w') as file:
             file.write(json.dumps(self.vaults))
-
-
 
 
     def __ensure_file_exists(self, filepath: str) -> None:

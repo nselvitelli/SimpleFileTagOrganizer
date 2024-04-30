@@ -1,4 +1,4 @@
-from typing import Set
+from typing import Set, Dict
 
 
 class FileInfo:
@@ -23,3 +23,11 @@ class FileInfo:
 
     def get_tags(self) -> Set[int]:
         return self.tags
+    
+    def to_dict(self) -> Dict[str, any]:
+        return {
+            'name': self.name,
+            'filepath': self.filepath,
+            'description': self.description,
+            'tags': list(self.tags)
+        }
